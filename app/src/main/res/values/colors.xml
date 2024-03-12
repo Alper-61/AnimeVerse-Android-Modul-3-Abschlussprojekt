@@ -2,4 +2,14 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+    <color name="header">#FF530877</color>
+    <color name="background">#FFA371BA</color>
+    <color name="bottombackground">#FF530877</color>
+    <color name="bottomitemselectcolor">#FFFFFFFF</color>
+    <color name="bottomitemunselectcolor">#FF9B6EAE</color>
+    <color name="favoritebtncolor">#FFEA8930</color>
+    <color name="textcolor">#F1EEEE</color>
+
 </resources>

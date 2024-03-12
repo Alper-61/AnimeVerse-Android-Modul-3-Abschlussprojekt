@@ -1,3 +1,30 @@
 <resources>
-    <string name="app_name">Android Abschluss</string>
+    <string name="app_name">Anime Info</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home">Home</string>
+    <string name="favorites">Favorites</string>
+    <string name="ranking">Ranking</string>
+    <string name="anime">Anime</string>
+    <string name="characters">Characters</string>
+    <string name="top_reviews">Top Reviews</string>
+    <string name="type">"Type: "</string>
+    <string name="title">"Title: "</string>
+    <string name="unknown">Unknown</string>
+    <string name="anime_info">AnimeVerse</string>
+    <string name="top_anime">Top Anime</string>
+    <string name="top_characters">Top Characters</string>
+    <string name="source">"Source: "</string>
+    <string name="name">Name:</string>
+    <string name="favori_bulunamad">Keine Favoriten gefunden</string>
+    <string name="rating">"Rating: "</string>
+    <string name="epidose">"Epidose: "</string>
+    <string name="duration">"Duration: "</string>
+    <string name="score">"Score: "</string>
+    <string name="point">" Point"</string>
+    <string name="ten">/10</string>
+    <string name="history">History</string>
+    <string name="descriptyion">Description</string>
+    <string name="about">About</string>
+    <string name="review">Review</string>
 </resources>
