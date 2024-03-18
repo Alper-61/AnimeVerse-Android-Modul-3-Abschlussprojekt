@@ -60,7 +60,5 @@ interface AnimeApiService {
 }
 
 object AnimeApi {
-    val retrofitService: AnimeApiService by lazy {
-        retrofit.create(AnimeApiService::class.java)
-    }
+    val retrofitService: AnimeApiService by lazy { retrofit.create(AnimeApiService::class.java)}
 }
