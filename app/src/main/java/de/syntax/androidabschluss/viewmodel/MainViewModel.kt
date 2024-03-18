@@ -16,9 +16,16 @@ import de.syntax.androidabschluss.data.models.*
 import de.syntax.androidabschluss.data.remote.AnimeApi
 import de.syntax.androidabschluss.data.local.AppDatabase
 import de.syntax.androidabschluss.data.local.AppDatabaseCharacters
+import de.syntax.androidabschluss.data.local.Dao
 import de.syntax.androidabschluss.data.local.EntityAnime
 import de.syntax.androidabschluss.data.local.EntityCharacters
+import de.syntax.androidabschluss.data.remote.AnimeApiService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -26,7 +33,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         AnimeApi.retrofitService,
         AppDatabase.getInstance(application),
         AppDatabaseCharacters.getInstance(application)
+
     )
+
 
     private val _animeDetailData = MutableLiveData<AnimeDetailModel>()
     val animeDetailData : LiveData<AnimeDetailModel> get() = _animeDetailData
@@ -66,18 +75,86 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
 
 
-
     fun getAnimeList(page:Int) {
         viewModelScope.launch {
             _anime.postValue(repository.getAnimeList(page))
         }
     }
 
-    fun getAnimeDetails(malId: Int) {
+    fun getCharactersList(page: Int) {
         viewModelScope.launch {
-            animeDetail.value = repository.getAnimeDetails(malId)
+            _characters.postValue(repository.getCharactersList(page))
         }
     }
 
-    // Weitere Funktionen zur Interaktion mit dem Repository
-}
+    fun getAnimeDetails(mal_id: Int){
+        viewModelScope.launch {
+            _animeDetailData.postValue(repository.getAnimeDetail(mal_id))
+        }
+    }
+
+    fun getCharacterDetails(mal_id: Int){
+        viewModelScope.launch {
+            _characterDetailData.postValue(repository.getCharacterDetails(mal_id))
+        }
+    }
+
+    fun getTopReviewsList(){
+        viewModelScope.launch {
+            _topreviews.postValue(repository.getTopReviewsList())
+        }
+    }
+
+    fun getTopAnimeList(page: Int){
+        viewModelScope.launch {
+            _anime.postValue(repository.getTopAnimeList(page))
+        }
+    }
+
+    fun getTopCharactersList(page: Int){
+        viewModelScope.launch {
+            _characters.postValue(repository.getTopCharactersList(page))
+        }
+    }
+
+    fun getFavoriteAnime(){
+        CoroutineScope(Dispatchers.Main).launch {
+            _dbData.postValue(AppDatabase.getAllAnime())
+        }
+    }
+    fun addFavoriteAnime(entity: EntityAnime) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val search = animeDbData.getAnimeById(entity.mal_id)
+            if (search == null) {
+                val insert = AppDatabase.insertAnime(entity)
+                _insertStatus.postValue(insert)
+            }else {
+                deleteFavoriteAnime(entity)
+            }
+        }
+    }
+    fun deleteFavoriteAnime(entity: EntityAnime) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val search = AppDatabase.getAnimeById(entity.mal_id)
+            if (search != null) {
+                dao.deleteAnime(entity)
+                _insertStatus.postValue(null)
+            }
+        }
+    }
+    fun searchFavoriteAnime(mal_id: Int) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val value = dao.getAnimeById(mal_id)
+            _dbSearch.postValue(value)
+
+        }
+    }
+
+
+    }
+
+
+
+
+
+
