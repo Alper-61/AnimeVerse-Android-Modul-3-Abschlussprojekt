@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.task.animeinfo.View.Fragment.HomeFragment"
+        android:name="de.syntax.androidabschluss.ui.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" >
         <action
@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="com.task.animeinfo.View.Fragment.FavoriteFragment"
+        android:name="de.syntax.androidabschluss.ui.FavoriteFragment"
         android:label="fragment_favorite"
         tools:layout="@layout/fragment_favorite" >
         <action
@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/rankingFragment"
-        android:name="com.task.animeinfo.View.Fragment.Ranking.RankingFragment"
+        android:name="de.syntax.androidabschluss.ui.Utils.RankingFragment"
         android:label="fragment_ranking"
         tools:layout="@layout/fragment_ranking" >
         <action
@@ -64,11 +64,11 @@
     </fragment>
     <fragment
         android:id="@+id/topReviewsDetailFragment"
-        android:name="com.task.animeinfo.View.Fragment.TopReviewsDetailFragment"
+        android:name="de.syntax.androidabschluss.ui.TopReviewsDetailFragment"
         android:label="fragment_top_reviews_detail"
         tools:layout="@layout/fragment_top_reviews_detail" >
         <argument
             android:name="list"
-            app:argType="com.task.animeinfo.Model.TopReviewsData" />
+            app:argType="de.syntax.androidabschluss.data.models.TopReviewsData" />
     </fragment>
 </navigation>

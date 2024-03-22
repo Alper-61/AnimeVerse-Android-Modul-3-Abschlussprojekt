@@ -1,11 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.AnimeInfo" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Base.Theme.AndroidAbschluss" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="colorPrimary">@color/header</item>
         <item name="android:textColor">@color/textcolor</item>
     </style>
 
-    <style name="Theme.AnimeInfo" parent="Base.Theme.AnimeInfo" />
+    <style name="Theme.AndroidAbschluss" parent="Base.Theme.AndroidAbschluss" />
 </resources>

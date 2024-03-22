@@ -1,4 +1,4 @@
-package de.syntax.androidabschluss
+package de.syntax.androidabschluss.data.models
 
 import com.squareup.moshi.Json
 import java.io.Serializable

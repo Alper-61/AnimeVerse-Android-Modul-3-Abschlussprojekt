@@ -4,35 +4,33 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.syntax.androidabschluss.AnimeData
-import de.syntax.androidabschluss.AnimeDetailModel
-import de.syntax.androidabschluss.AnimeModel
+import de.syntax.androidabschluss.data.models.AnimeDetailModel
+import de.syntax.androidabschluss.data.models.AnimeModel
 import de.syntax.androidabschluss.CharacterDetailModel
-import de.syntax.androidabschluss.CharactersModel
-import de.syntax.androidabschluss.HomeTopReviewsModel
+import de.syntax.androidabschluss.data.models.CharactersModel
+import de.syntax.androidabschluss.data.models.HomeTopReviewsModel
 import de.syntax.androidabschluss.data.Repository
-import de.syntax.androidabschluss.data.models.*
 import de.syntax.androidabschluss.data.remote.AnimeApi
 import de.syntax.androidabschluss.data.local.AppDatabase
 import de.syntax.androidabschluss.data.local.AppDatabaseCharacters
 import de.syntax.androidabschluss.data.local.Dao
 import de.syntax.androidabschluss.data.local.EntityAnime
 import de.syntax.androidabschluss.data.local.EntityCharacters
-import de.syntax.androidabschluss.data.remote.AnimeApiService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import okhttp3.internal.toImmutableList
+
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = Repository(
         AnimeApi.retrofitService,
         AppDatabase.getInstance(application),
-        AppDatabaseCharacters.getInstance(application)
+        AppDatabaseCharacters.getInstance(application),
 
     )
 
@@ -75,9 +73,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
 
 
-    fun getAnimeList(page:Int) {
+    fun getAnimeList(page: Int) {
         viewModelScope.launch {
-            _anime.postValue(repository.getAnimeList(page))
+            val animeList = repository.getAnimeList(page)
+            _anime.postValue((animeList))
         }
     }
 
@@ -117,41 +116,70 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getFavoriteAnime(){
-        CoroutineScope(Dispatchers.Main).launch {
-            _dbData.postValue(AppDatabase.getAllAnime())
+
+
+    fun getFavoriteAnime() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val favanime = repository.getFavoriteAnime()
+            _animeDbData.postValue(favanime)
         }
     }
+
     fun addFavoriteAnime(entity: EntityAnime) {
-        CoroutineScope(Dispatchers.Main).launch {
-            val search = animeDbData.getAnimeById(entity.mal_id)
-            if (search == null) {
-                val insert = AppDatabase.insertAnime(entity)
-                _insertStatus.postValue(insert)
-            }else {
-                deleteFavoriteAnime(entity)
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            val insertResult = repository.addFavoriteAnime(entity)
+            _insertStatus.postValue(insertResult)
         }
     }
+
     fun deleteFavoriteAnime(entity: EntityAnime) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val search = AppDatabase.getAnimeById(entity.mal_id)
-            if (search != null) {
-                dao.deleteAnime(entity)
-                _insertStatus.postValue(null)
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteFavoriteAnime(entity)
+            _insertStatus.postValue(null)
         }
     }
+
     fun searchFavoriteAnime(mal_id: Int) {
-        CoroutineScope(Dispatchers.Main).launch {
-            val value = dao.getAnimeById(mal_id)
-            _dbSearch.postValue(value)
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.searchFavoriteAnime(mal_id)
+            getFavoriteAnime()
+        }
+    }
 
+    fun getFavoriteCharacters() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val favoritesCharacters = repository.getFavoriteCharacters()
+            _dbData.postValue(favoritesCharacters)
+        }
+    }
+
+    fun addFavoriteCharacter(entity: EntityCharacters) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = repository.addFavoriteCharacter(entity)
+            _insertStatus.postValue(result)
+        }
+    }
+
+    fun deleteFavoriteCharacter(entity: EntityCharacters) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteFavoriteCharacter(entity)
+            _insertStatus.postValue(null)
+        }
+    }
+
+    fun searchFavoriteCharacter(mal_id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val character = repository.searchFavoriteCharacter(mal_id)
+            _dbSearch.postValue(character)
         }
     }
 
 
     }
+
+
+
+
 
 
 

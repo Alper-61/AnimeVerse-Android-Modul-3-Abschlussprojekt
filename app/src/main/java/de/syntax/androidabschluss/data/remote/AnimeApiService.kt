@@ -2,11 +2,11 @@ package de.syntax.androidabschluss.data.remote
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import de.syntax.androidabschluss.AnimeDetailModel
-import de.syntax.androidabschluss.AnimeModel
+import de.syntax.androidabschluss.data.models.AnimeDetailModel
+import de.syntax.androidabschluss.data.models.AnimeModel
 import de.syntax.androidabschluss.CharacterDetailModel
-import de.syntax.androidabschluss.CharactersModel
-import de.syntax.androidabschluss.HomeTopReviewsModel
+import de.syntax.androidabschluss.data.models.CharactersModel
+import de.syntax.androidabschluss.data.models.HomeTopReviewsModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

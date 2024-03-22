@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".View.Fragment.FavoriteFragment">
+    tools:context=".ui.FavoriteFragment">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"

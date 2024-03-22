@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.Fragment.Ranking.TopAnimeFragment">
+    tools:context=".ui.TopAnimeFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvTAnime"

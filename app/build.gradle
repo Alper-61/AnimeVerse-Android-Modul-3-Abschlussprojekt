@@ -2,17 +2,18 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id("androidx.navigation.safeargs.kotlin")
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
+
 }
 
 android {
     namespace 'de.syntax.androidabschluss'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "de.syntax.androidabschluss"
-        minSdk 24
-        targetSdk 33
+        minSdk 26
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -61,10 +62,13 @@ dependencies {
     //Glide
     implementation("com.github.bumptech.glide:glide:4.16.0")
 
+    // Coil
+    implementation("io.coil-kt:coil:2.6.0")
+
     //Room
     implementation("androidx.room:room-runtime:2.6.1")
-    //noinspection KaptUsageInsteadOfKsp
-    kapt("androidx.room:room-compiler:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
 
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
