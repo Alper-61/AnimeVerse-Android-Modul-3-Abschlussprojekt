@@ -116,6 +116,9 @@ suspend fun getAnimeDetail(mal_id:Int): AnimeDetailModel?{
     suspend fun searchFavoriteCharacter(mal_id: Int): EntityCharacters? {
         return appDatabaseCharacters.favoriteDao().getCharactersById(mal_id)
     }
+
+
+
 }
 
 

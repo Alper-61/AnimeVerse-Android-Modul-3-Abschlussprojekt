@@ -46,7 +46,7 @@
     </fragment>
     <fragment
         android:id="@+id/animeDetailFragment"
-        android:name="com.task.animeinfo.View.Fragment.AnimeDetailFragment"
+        android:name="de.syntax.androidabschluss.ui.AnimeDetailFragment"
         android:label="fragment_anime_detail"
         tools:layout="@layout/fragment_anime_detail" >
         <argument
@@ -55,7 +55,7 @@
     </fragment>
     <fragment
         android:id="@+id/characterDetailFragment"
-        android:name="com.task.animeinfo.View.Fragment.CharacterDetailFragment"
+        android:name="de.syntax.androidabschluss.ui.CharacterDetailFragment"
         android:label="fragment_character_detail"
         tools:layout="@layout/fragment_character_detail" >
         <argument

@@ -1,81 +1,141 @@
 package de.syntax.androidabschluss.ui
 
+import android.annotation.SuppressLint
+import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import com.task.animeinfo.View.Fragment.CharacterDetailFragmentArgs
-import de.syntax.androidabschluss.CharacterDetailModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.navArgs
 import de.syntax.androidabschluss.R
 import de.syntax.androidabschluss.Utils.glideImageSet
+import de.syntax.androidabschluss.data.local.EntityCharacters
+import de.syntax.androidabschluss.data.local.TempEntityCharacters
 import de.syntax.androidabschluss.databinding.FragmentCharacterDetailBinding
 import de.syntax.androidabschluss.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.withContext
 
 class CharacterDetailFragment : Fragment() {
 
-    private var _binding: FragmentCharacterDetailBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var b : FragmentCharacterDetailBinding
+    private lateinit var viewModel : MainViewModel
 
-    // Ersetzt durch das zentrale MainViewModel
-    private val viewModel: MainViewModel by viewModels()
-
+    private val viewModelFavorite: MainViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentCharacterDetailBinding.inflate(inflater, container, false)
-        val id = CharacterDetailFragmentArgs.fromBundle(requireArguments()).malId
+    ): View? {
+        b = FragmentCharacterDetailBinding.inflate(layoutInflater,container,false)
+        // Inflate the layout for this fragment
 
-        observeCharacterDetails(id)
-        /*observeFavoriteStatus(id)
-        setupFavoriteButton(id)*/
-
-        return binding.root
+        return b.root
     }
 
-    private fun observeCharacterDetails(id: Int) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val bundle:CharacterDetailFragmentArgs by navArgs()
+        val id = bundle.malId
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        setup()
+        getData()
         viewModel.getCharacterDetails(id)
-        viewModel.characterDetailData.observe(viewLifecycleOwner) { character ->
-            updateUI(character)
-        }
+        getFavorite()
+        viewModelFavorite.searchFavoriteCharacter(id)
+
     }
 
-    /*private fun observeFavoriteStatus(id: Int) {
-        viewModel.getFavoriteStatus(id) // Angenommen, diese Methode existiert im MainViewModel
-        viewModel.isFavorite.observe(viewLifecycleOwner) { isFavorite ->
-            updateFavoriteButton(isFavorite)
+    private fun setup() {
+        b.apply {
+            favoriteBtn.setOnClickListener {
+                if (detailsItem.image_url.isNotEmpty()) {
+                    viewModelFavorite.addFavoriteCharacter(
+                        EntityCharacters(detailsItem.mal_id,detailsItem.image_url,detailsItem.name,detailsItem.about)
+                    )
+                }
+            }
+            backBtn.setOnClickListener {
+                activity?.onBackPressedDispatcher?.onBackPressed()
+            }
         }
-    }*/
+    }
+    private var detailsItem: TempEntityCharacters =
+        TempEntityCharacters(0, "", "", "")
+    @SuppressLint("SetTextI18n")
+    private fun getData() {
+        viewModel.characterDetailData.observe(viewLifecycleOwner) {
+            if (it.data.mal_id != null) {
+                detailsItem.mal_id = it.data.mal_id
+                detailsItem.image_url = it.data.images?.jpg?.image_url!!
+                detailsItem.name = it.data.name!!
+                detailsItem.about = it.data.about!!
 
-    /*private fun setupFavoriteButton(id: Int) {
-        binding.favoriteBtn.setOnClickListener {
-            viewModel.toggleFavoriteCharacter(id) // Angenommen, diese Methode existiert im MainViewModel
+            }
+
+            b.apply {
+                CoroutineScope(Dispatchers.Main).launch {
+                    var image = it.data.images?.jpg?.image_url
+                    if (image != null) {
+                        animImage.glideImageSet(image)
+                    }
+                    titleTv.text = it.data.name
+                    descriptionTv.text = it.data.about
+
+                }
+            }
+
         }
-    }*/
-
-    private fun updateUI(character: CharacterDetailModel?) {
-        // Aktualisiere UI-Elemente basierend auf dem CharacterDetailModel
-        character?.let {
-            binding.titleTv.text = it.data.name
-            binding.descriptionTv.text = it.data.about
-            CoroutineScope(Dispatchers.Main).launch {
-                val image = it.data.images.toString() // imageUrl sollte Teil deines CharacterDetailModels sein
-                binding.animImage.glideImageSet(it.data.url.toString())
+    }
+    private var addedFavorite: Boolean = false
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun getFavorite() {
+        viewModelFavorite.insertStatus.observe(viewLifecycleOwner) {
+            if (it != null) {
+                b.favoriteBtn.setImageDrawable(
+                    resources.getDrawable(
+                        R.drawable.favoritefill,
+                        null
+                    )
+                )
+            }else {
+                b.favoriteBtn.setImageDrawable(
+                    resources.getDrawable(
+                        R.drawable.favoriteempty,
+                        null
+                    )
+                )
+            }
+        }
+        viewModelFavorite.dbSearchStatus.observe(viewLifecycleOwner) { entityAnime ->
+            addedFavorite = entityAnime != null
+            CoroutineScope(Dispatchers.IO).launch {
+                withContext(Dispatchers.Main) {
+                    //Favorite Icon Fill || Empty transactions
+                    if (addedFavorite) {
+                        b.favoriteBtn.setImageDrawable(
+                            resources.getDrawable(
+                                R.drawable.favoritefill,
+                                null
+                            )
+                        )
+                    } else {
+                        b.favoriteBtn.setImageDrawable(
+                            resources.getDrawable(
+                                R.drawable.favoriteempty,
+                                null
+                            )
+                        )
+                    }
+                }
             }
         }
     }
 
-    /*private fun updateFavoriteButton(isFavorite: Boolean) {
-        binding.favoriteBtn.setImageResource(if (isFavorite) R.drawable.favorite_fill else R.drawable.favorite_empty)
-    }*/
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
 }

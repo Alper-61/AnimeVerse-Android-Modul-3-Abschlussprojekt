@@ -18,14 +18,18 @@ import de.syntax.androidabschluss.ui.HomeFragmentDirections
 import de.syntax.androidabschluss.viewmodel.MainViewModel
 
 class HomeAnimeAdapter(private val dataset: List<AnimeData>,
-    private val viewModel : MainViewModel
-    ) :
+    private val viewModel : MainViewModel) :
     RecyclerView.Adapter<HomeAnimeAdapter.HomeAnimeViewHolder>() {
-    inner class HomeAnimeViewHolder(val binding: DesignHomeAnimeCharactersBinding): RecyclerView.ViewHolder(binding.root)
+    inner class HomeAnimeViewHolder(val binding: DesignHomeAnimeCharactersBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeAnimeViewHolder {
-        val binding = DesignHomeAnimeCharactersBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val binding = DesignHomeAnimeCharactersBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return HomeAnimeViewHolder(binding)
     }
 
@@ -35,15 +39,20 @@ class HomeAnimeAdapter(private val dataset: List<AnimeData>,
 
     override fun onBindViewHolder(holder: HomeAnimeViewHolder, position: Int) {
         val item = dataset[position]
-        holder.binding.imageView.load(item.images)
-        holder.binding.textView.text = item.title
+        item.images?.jpg?.image_url?.let { holder.binding.imageView.glideImageSet(it) }
+            holder.binding.textView.text = item.title
 
-        holder.itemView.setOnClickListener {
-            viewModel.getAnimeList(it.id)
-            holder.itemView.findNavController().navigate(R.id.action_homeFragment_to_animeDetailFragment)
+            holder.itemView.setOnClickListener { view ->
+                val action = item.mal_id?.let {
+                    HomeFragmentDirections.actionHomeFragmentToAnimeDetailFragment(it)
+                }
+                if (action != null) {
+                    view.findNavController().navigate(action)
+                }
+
+            }
+
         }
 
     }
 
-
-}

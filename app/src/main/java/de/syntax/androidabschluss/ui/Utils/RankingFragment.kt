@@ -5,12 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.tabs.TabLayoutMediator
 import de.syntax.androidabschluss.R
 import de.syntax.androidabschluss.adapter.RankingViewPagerAdapter
 import de.syntax.androidabschluss.databinding.FragmentRankingBinding
 import de.syntax.androidabschluss.ui.TopAnimeFragment
 import de.syntax.androidabschluss.ui.TopCharactersFragment
+import de.syntax.androidabschluss.viewmodel.MainViewModel
 
 
 class RankingFragment : Fragment() {
@@ -45,6 +47,5 @@ class RankingFragment : Fragment() {
 
         return b.root
     }
-
 
 }

@@ -13,7 +13,7 @@ import de.syntax.androidabschluss.R
 import de.syntax.androidabschluss.data.models.TopReviewsData
 import de.syntax.androidabschluss.ui.HomeFragmentDirections
 
-class HomeTopReviewsAdapter(private val list: List<TopReviewsData>) :
+class HomeTopReviewsAdapter(private val dataset: List<TopReviewsData>) :
     RecyclerView.Adapter<HomeTopReviewsAdapter.d>() {
     inner class d(v: View) : RecyclerView.ViewHolder(v) {
         val image: ImageView = v.findViewById(R.id.imageView2)
@@ -28,12 +28,12 @@ class HomeTopReviewsAdapter(private val list: List<TopReviewsData>) :
     }
 
     override fun getItemCount(): Int {
-        return list.size
+        return dataset.size
     }
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: d, position: Int) {
-        val item = list[position]
+        val item = dataset[position]
         holder.apply {
             item.entry?.images?.jpg?.let { image.glideImageSet(it.image_url) }
             textTypeTitle.text =

@@ -11,7 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import de.syntax.androidabschluss.Utils.glideImageSet
 import de.syntax.androidabschluss.data.models.AnimeData
 import de.syntax.androidabschluss.R
+import de.syntax.androidabschluss.databinding.DesignHomeTopAnimeCharactersBinding
+import de.syntax.androidabschluss.databinding.FragmentTopAnimeBinding
 import de.syntax.androidabschluss.ui.Utils.RankingFragmentDirections
+import de.syntax.androidabschluss.viewmodel.MainViewModel
 
 class RankingTopAnimeAdapter(private val list: List<AnimeData>) :
     RecyclerView.Adapter<RankingTopAnimeAdapter.d>() {

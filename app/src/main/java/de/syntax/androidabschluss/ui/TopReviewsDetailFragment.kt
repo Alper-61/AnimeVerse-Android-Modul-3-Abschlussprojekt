@@ -13,24 +13,26 @@ import de.syntax.androidabschluss.databinding.FragmentTopReviewsDetailBinding
 
 class TopReviewsDetailFragment : Fragment() {
 
-    private var _binding: FragmentTopReviewsDetailBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentTopReviewsDetailBinding
     private val args: TopReviewsDetailFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentTopReviewsDetailBinding.inflate(inflater, container, false)
-        setupView(args.list)
+        binding = FragmentTopReviewsDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
-
-    private fun setupView(reviewData: TopReviewsData) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView(args.list)
         binding.backBtn.setOnClickListener {
             activity?.onBackPressedDispatcher?.onBackPressed()
         }
 
+
+        }
+    private fun setupView(reviewData: TopReviewsData) {
         binding.titleTv.text = reviewData.entry?.title
         binding.ratingTv.text = "${getString(R.string.score)} ${reviewData.score}${getString(R.string.ten)}"
         reviewData.entry?.images?.jpg?.image_url?.let { imageUrl ->
@@ -40,8 +42,5 @@ class TopReviewsDetailFragment : Fragment() {
         binding.descriptionTv.text = reviewData.review
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
+
 }

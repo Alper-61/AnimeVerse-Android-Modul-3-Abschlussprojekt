@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.syntax.androidabschluss.data.models.AnimeDetailModel
 import de.syntax.androidabschluss.data.models.AnimeModel
@@ -15,24 +14,27 @@ import de.syntax.androidabschluss.data.Repository
 import de.syntax.androidabschluss.data.remote.AnimeApi
 import de.syntax.androidabschluss.data.local.AppDatabase
 import de.syntax.androidabschluss.data.local.AppDatabaseCharacters
-import de.syntax.androidabschluss.data.local.Dao
 import de.syntax.androidabschluss.data.local.EntityAnime
 import de.syntax.androidabschluss.data.local.EntityCharacters
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import okhttp3.internal.toImmutableList
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
-
     private val repository = Repository(
         AnimeApi.retrofitService,
         AppDatabase.getInstance(application),
         AppDatabaseCharacters.getInstance(application),
 
+
     )
+
+
 
 
     private val _animeDetailData = MutableLiveData<AnimeDetailModel>()
@@ -48,7 +50,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val animeDbSearchStatus : LiveData<EntityAnime?> get() = _animeDbSearch
 
     private val _animeInsertStatus = MutableLiveData<Long?>()
-    val animeInsertStatus : LiveData<Long?> get() = _insertStatus
+    val animeInsertStatus : LiveData<Long?> get() = _animeInsertStatus
 
     private val _dbData = MutableLiveData<List<EntityCharacters>>()
     val dbData : LiveData<List<EntityCharacters>> get() = _dbData
@@ -68,6 +70,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _topreviews = MutableLiveData<HomeTopReviewsModel>()
     val topreviews : LiveData<HomeTopReviewsModel> get() = _topreviews
 
+    init {
+        getFavoriteAnime()
+        getFavoriteCharacters()
+    }
+
 
 
 
@@ -75,8 +82,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getAnimeList(page: Int) {
         viewModelScope.launch {
-            val animeList = repository.getAnimeList(page)
-            _anime.postValue((animeList))
+            _anime.postValue(repository.getAnimeList(page))
         }
     }
 
@@ -120,22 +126,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getFavoriteAnime() {
         viewModelScope.launch(Dispatchers.IO) {
-            val favanime = repository.getFavoriteAnime()
-            _animeDbData.postValue(favanime)
+            _animeDbData.postValue(repository.getFavoriteAnime())
         }
     }
 
     fun addFavoriteAnime(entity: EntityAnime) {
         viewModelScope.launch(Dispatchers.IO) {
             val insertResult = repository.addFavoriteAnime(entity)
-            _insertStatus.postValue(insertResult)
+            _animeInsertStatus.postValue(insertResult)
+
         }
     }
 
     fun deleteFavoriteAnime(entity: EntityAnime) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteFavoriteAnime(entity)
-            _insertStatus.postValue(null)
+            _animeInsertStatus.postValue(null)
         }
     }
 
@@ -173,6 +179,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             _dbSearch.postValue(character)
         }
     }
+
+
+
+    private val _data = MutableLiveData<AnimeDetailModel>()
+    val data : LiveData<AnimeDetailModel> get() = _data
+
+
 
 
     }

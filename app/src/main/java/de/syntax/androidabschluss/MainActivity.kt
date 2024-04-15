@@ -8,16 +8,16 @@ import androidx.navigation.ui.NavigationUI
 import de.syntax.androidabschluss.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var b : ActivityMainBinding
+    private lateinit var binding : ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        b = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(b.root)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val navHost = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
-        NavigationUI.setupWithNavController(b.bottomNavigationView,navHost.navController)
+        NavigationUI.setupWithNavController(binding.bottomNavigationView,navHost.navController)
 
-        b.bottomNavigationView.setOnItemSelectedListener{
+        binding.bottomNavigationView.setOnItemSelectedListener{
             when (it.itemId) {
                 R.id.homeFragment -> {
                     findNavController(R.id.fragmentContainerView).navigate(R.id.homeFragment)
