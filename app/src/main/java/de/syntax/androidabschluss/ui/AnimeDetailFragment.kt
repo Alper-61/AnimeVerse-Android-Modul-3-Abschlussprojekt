@@ -130,24 +130,25 @@ class AnimeDetailFragment : Fragment() {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun getFavorite() {
-        viewModel.insertStatus.observe(viewLifecycleOwner) {
-            if (it != null) {
-                binding?.favoriteBtn?.setImageDrawable(
-                    resources.getDrawable(
-                        R.drawable.favoritefill,
-                        null
-                    )
-                )
-            } else {
+        viewModel.animeInsertStatus.observe(viewLifecycleOwner) {
+            println("insertStatus $it")
+            if (it == (-1).toLong()) {
                 binding?.favoriteBtn?.setImageDrawable(
                     resources.getDrawable(
                         R.drawable.favoriteempty,
                         null
                     )
                 )
+            }else {
+                binding?.favoriteBtn?.setImageDrawable(
+                    resources.getDrawable(
+                        R.drawable.favoritefill,
+                        null
+                    )
+                )
             }
         }
-        viewModel.dbSearchStatus.observe(viewLifecycleOwner) { entityAnime ->
+        viewModel.animeDbSearchStatus.observe(viewLifecycleOwner) { entityAnime ->
             addedFavorite = entityAnime != null
             CoroutineScope(Dispatchers.IO).launch {
                 withContext(Dispatchers.Main) {
@@ -173,5 +174,9 @@ class AnimeDetailFragment : Fragment() {
     }
 
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null // Verhindern von Memory Leaks
+    }
 
 }

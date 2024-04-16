@@ -35,13 +35,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     )
 
-
-
     private val _animeDetailData = MutableLiveData<AnimeDetailModel>()
     val animeDetailData : LiveData<AnimeDetailModel> get() = _animeDetailData
 
     private val _characterDetailData = MutableLiveData<CharacterDetailModel>()
     val characterDetailData : LiveData<CharacterDetailModel> get() = _characterDetailData
+
+    private val _anime = MutableLiveData<AnimeModel>()
+    val anime : LiveData<AnimeModel> get() = _anime
+
+    private val _characters = MutableLiveData<CharactersModel>()
+    val characters : LiveData<CharactersModel> get() = _characters
+
+    private val _topreviews = MutableLiveData<HomeTopReviewsModel>()
+    val topreviews : LiveData<HomeTopReviewsModel> get() = _topreviews
+
 
     private val _animeDbData = MutableLiveData<List<EntityAnime>>()
     val animeDbData : LiveData<List<EntityAnime>> get() = _animeDbData
@@ -61,14 +69,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _insertStatus = MutableLiveData<Long?>()
     val insertStatus : LiveData<Long?> get() = _insertStatus
 
-    private val _anime = MutableLiveData<AnimeModel>()
-    val anime : LiveData<AnimeModel> get() = _anime
 
-    private val _characters = MutableLiveData<CharactersModel>()
-    val characters : LiveData<CharactersModel> get() = _characters
-
-    private val _topreviews = MutableLiveData<HomeTopReviewsModel>()
-    val topreviews : LiveData<HomeTopReviewsModel> get() = _topreviews
 
     init {
         getFavoriteAnime()
@@ -125,62 +126,64 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
 
     fun getFavoriteAnime() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Main) {
             _animeDbData.postValue(repository.getFavoriteAnime())
         }
     }
 
     fun addFavoriteAnime(entity: EntityAnime) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Main) {
             val insertResult = repository.addFavoriteAnime(entity)
+            if (insertResult == (-1).toLong()) {
+                deleteFavoriteAnime(entity)
+            }
             _animeInsertStatus.postValue(insertResult)
 
         }
     }
-
     fun deleteFavoriteAnime(entity: EntityAnime) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Main) {
             repository.deleteFavoriteAnime(entity)
-            _animeInsertStatus.postValue(null)
         }
     }
 
     fun searchFavoriteAnime(mal_id: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.searchFavoriteAnime(mal_id)
-            getFavoriteAnime()
+        viewModelScope.launch(Dispatchers.Main) {
+            val rp = repository.searchFavoriteAnime(mal_id)
+            _animeDbSearch.postValue(rp)
         }
     }
 
     fun getFavoriteCharacters() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Main) {
             val favoritesCharacters = repository.getFavoriteCharacters()
             _dbData.postValue(favoritesCharacters)
         }
     }
 
     fun addFavoriteCharacter(entity: EntityCharacters) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Main) {
             val result = repository.addFavoriteCharacter(entity)
+            if (result == (-1).toLong()) {
+                deleteFavoriteCharacter(entity)
+            }
             _insertStatus.postValue(result)
         }
     }
 
     fun deleteFavoriteCharacter(entity: EntityCharacters) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Main) {
             repository.deleteFavoriteCharacter(entity)
             _insertStatus.postValue(null)
         }
     }
 
     fun searchFavoriteCharacter(mal_id: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Main) {
             val character = repository.searchFavoriteCharacter(mal_id)
             _dbSearch.postValue(character)
         }
     }
-
-
 
 
     }

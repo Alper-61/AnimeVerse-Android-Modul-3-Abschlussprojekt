@@ -94,13 +94,13 @@ class FavoriteFragment : Fragment() {
                 }
             }
         }
-        viewModel.dbData.observe(viewLifecycleOwner){
+        viewModel.animeDbData.observe(viewLifecycleOwner){
 
             CoroutineScope(Dispatchers.IO).launch{
                 withContext(Dispatchers.Main) {
                     listAnime.clear()
                     if (it.isNotEmpty()) {
-                        listAnime.addAll(listAnime)
+                        listAnime.addAll(it)
                         adapterAnime.notifyDataSetChanged()
                         binding.animeTv.visibility = View.VISIBLE
                         binding.rvAnime.visibility = View.VISIBLE
