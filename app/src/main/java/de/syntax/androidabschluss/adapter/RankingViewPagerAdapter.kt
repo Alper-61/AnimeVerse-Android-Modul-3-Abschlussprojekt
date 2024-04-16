@@ -1,4 +1,3 @@
-// Paketdeklaration und Importanweisungen für notwendige Klassen und Bibliotheken.
 package de.syntax.androidabschluss.adapter
 
 import androidx.fragment.app.Fragment
