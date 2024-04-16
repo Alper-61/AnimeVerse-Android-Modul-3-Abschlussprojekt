@@ -19,6 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+
+// Fragment zur Anzeige von Lieblingsanimes und -charakteren.
 class FavoriteFragment : Fragment() {
     private lateinit var binding : FragmentFavoriteBinding
     private val viewModel: MainViewModel by activityViewModels()
@@ -30,13 +32,21 @@ class FavoriteFragment : Fragment() {
 
     private var listCharacters : ArrayList<EntityCharacters> = ArrayList()
     private lateinit var adapterCharacters : FavoriteCharactersAdapter
+
+    // Erstellt und initialisiert die Ansicht des Fragments.
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentFavoriteBinding.inflate(layoutInflater,container,false)
 
+        return binding.root
+    }
 
+
+    // Wird aufgerufen, sobald die Ansicht erstellt wurde.
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.apply {
 
             rvAnime.setHasFixedSize(true)
@@ -57,19 +67,18 @@ class FavoriteFragment : Fragment() {
         getData()
         viewModel.getFavoriteAnime()
         viewModel.getFavoriteCharacters()
-
-
-        // Inflate the layout for this fragment
-        return binding.root
     }
 
+
+    // Lädt die Daten für Anime und Charaktere und aktualisiert die Ansichten.
     @SuppressLint("NotifyDataSetChanged")
     private fun getData() {
         /**
-         * Favorileri Viewmodel'den çektikten sonra iç fonksiyon kullanıldı bütün favori listeleri geldikten sonra
-         * listeler boş ise favori yoktur , listeler dolur ise favoriler gözükmesi için*/
+         * Nach dem Abrufen der Favoriten aus dem Viewmodel wurde die interne Funktion verwendet, nachdem alle Favoritenlisten abgerufen wurden.
+         * Wenn die Listen leer sind, gibt es keine Favoriten, wenn die Listen voll sind, werden die Favoriten angezeigt*/
         fun nestedFunc() {
             viewModel.dbData.observe(viewLifecycleOwner) {
+                // Aktualisiert die Liste der Charakter-Favoriten.
                 CoroutineScope(Dispatchers.IO).launch{
                     withContext(Dispatchers.Main) {
                         listCharacters.clear()
@@ -96,6 +105,7 @@ class FavoriteFragment : Fragment() {
         }
         viewModel.animeDbData.observe(viewLifecycleOwner){
 
+            // Aktualisiert die Liste der Anime-Favoriten.
             CoroutineScope(Dispatchers.IO).launch{
                 withContext(Dispatchers.Main) {
                     listAnime.clear()

@@ -20,6 +20,8 @@ import de.syntax.androidabschluss.databinding.FragmentHomeBinding
 import de.syntax.androidabschluss.viewmodel.MainViewModel
 import kotlinx.coroutines.joinAll
 
+
+// Hauptfragment, das Listen von Animes, Charakteren und Top-Rezensionen zeigt.
 class HomeFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
     private lateinit var binding: FragmentHomeBinding
@@ -32,6 +34,8 @@ class HomeFragment : Fragment() {
 
     private var listTopReviews : ArrayList<TopReviewsData> = ArrayList()
     private lateinit var adapterTopReviews : HomeTopReviewsAdapter
+
+    // Erstellt die Ansicht des Fragments und initialisiert das Binding.
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,6 +44,7 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    // Konfiguriert die RecyclerViews nach der Erstellung der Ansicht.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getListener()
@@ -70,7 +75,7 @@ class HomeFragment : Fragment() {
 
 
 
-
+    // Implementiert die Paginierung für Anime und Charaktere.
     private fun paginationFunc() {
         binding.rvAnime.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -82,6 +87,7 @@ class HomeFragment : Fragment() {
                 val totalItems = layoutManager.itemCount
                 val firstVisibleItemPositions = layoutManager.findFirstVisibleItemPositions(null)
 
+                // Separate Funktionen für die Anime Paginierung.
                 if (firstVisibleItemPositions.any { it + visibleItems >= totalItems }) {
                     if (animeFirstPage < animeTotalPage) {
                         if (!animePaginationDuration) {
@@ -106,6 +112,7 @@ class HomeFragment : Fragment() {
                 val totalItems = layoutManager.itemCount
                 val firstVisibleItemPositions = layoutManager.findFirstVisibleItemPositions(null)
 
+                // Separate Funktionen Charakter-Paginierung.
                 if (firstVisibleItemPositions.any { it + visibleItems >= totalItems }) {
                     if (chaFirstPage < chaTotalPage) {
                         if (!chaPaginationDuration) {
@@ -122,6 +129,7 @@ class HomeFragment : Fragment() {
 
     }
 
+    // Variablen zur Verwaltung der Paginierungszustände.
     private var animeTotalPage = 1
     private var animeFirstPage = 1
     private var animePaginationDuration = false
@@ -132,6 +140,7 @@ class HomeFragment : Fragment() {
 
 
 
+    // Listener-Funktion, die auf Änderungen in den ViewModel-Daten reagiert.
     @SuppressLint("NotifyDataSetChanged")
     private fun getListener() {
         listAnime.clear()

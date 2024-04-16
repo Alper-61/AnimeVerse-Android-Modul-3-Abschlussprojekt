@@ -22,11 +22,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 
+
+// Fragment zur Detailansicht eines Charakters.
 class CharacterDetailFragment : Fragment() {
     private var b: FragmentCharacterDetailBinding? = null
     private lateinit var viewModel : MainViewModel
 
+    // Verwendung des ViewModel aus dem umgebenden Aktivitätskontext.
     private val viewModelFavorite: MainViewModel by activityViewModels()
+
+
+    // Erstellt und initialisiert die Ansicht des Fragments.
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,6 +43,8 @@ class CharacterDetailFragment : Fragment() {
         return b?.root
     }
     private var malId = 0
+
+    // Wird aufgerufen, sobald die Ansicht erstellt wurde.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val bundle:CharacterDetailFragmentArgs by navArgs()
@@ -50,6 +58,7 @@ class CharacterDetailFragment : Fragment() {
 
     }
 
+    // Initialisiert UI-Elemente und Interaktionen.
     private fun setup() {
         b?.apply {
             favoriteBtn.setOnClickListener {
@@ -64,8 +73,12 @@ class CharacterDetailFragment : Fragment() {
             }
         }
     }
+
+    // Temporäres Modell zur Speicherung von Charakterdetails.
     private var detailsItem: TempEntityCharacters =
         TempEntityCharacters(0, "", "", "")
+
+    // Lädt die Daten des Charakters und stellt sie dar.
     @SuppressLint("SetTextI18n")
     private fun getData() {
         viewModel.characterDetailData.observe(viewLifecycleOwner) {
@@ -98,6 +111,8 @@ class CharacterDetailFragment : Fragment() {
         }
     }
     private var addedFavorite: Boolean = false
+
+    // Verwaltet den Favoritenstatus und das Icon für den Favoritenbutton.
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun getFavorite() {
         viewModelFavorite.insertStatus.observe(viewLifecycleOwner) {
@@ -142,6 +157,7 @@ class CharacterDetailFragment : Fragment() {
         }
     }
 
+    // Bereinigt die Bindungen, wenn das Fragment zerstört wird, um Speicherlecks zu verhindern.
     override fun onDestroyView() {
         super.onDestroyView()
         b = null // Verhindern von Memory Leaks

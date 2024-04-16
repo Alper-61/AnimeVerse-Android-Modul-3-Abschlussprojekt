@@ -14,9 +14,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Ermittelt das NavHostFragment, das für die Navigation zuständig ist.
         val navHost = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        // Verknüpft die untere Navigationsleiste mit dem NavController.
         NavigationUI.setupWithNavController(binding.bottomNavigationView,navHost.navController)
 
+        // Listener für die Elemente der unteren Navigationsleiste.
         binding.bottomNavigationView.setOnItemSelectedListener{
             when (it.itemId) {
                 R.id.homeFragment -> {

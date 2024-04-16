@@ -6,11 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
-import de.syntax.androidabschluss.Utils.glideImageSet
 import de.syntax.androidabschluss.R
+import de.syntax.androidabschluss.Utils.glideImageSet
 import de.syntax.androidabschluss.data.local.EntityAnime
 import de.syntax.androidabschluss.data.local.TempEntityAnimeModel
 import de.syntax.androidabschluss.databinding.FragmentAnimeDetailBinding
@@ -27,19 +26,18 @@ class AnimeDetailFragment : Fragment() {
         ViewModelProvider(this)[MainViewModel::class.java]
     }
 
-
+    // Erstellt und initialisiert die Ansicht des Fragments.
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentAnimeDetailBinding.inflate(layoutInflater, container, false)
-        // Inflate the layout for this fragment
-
-
         return binding?.root
     }
 
     private var malId  = 0
+
+    // Wird aufgerufen, sobald die Ansicht erstellt wurde.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -54,6 +52,7 @@ class AnimeDetailFragment : Fragment() {
     }
 
 
+    // Initialisiert UI-Elemente und Interaktionen.
     private fun setup() {
         binding?.apply {
             favoriteBtn.setOnClickListener {
@@ -77,10 +76,12 @@ class AnimeDetailFragment : Fragment() {
         }
     }
 
-    //Favori Btn da kullanmak için
+    // Temporäres Modell zur Speicherung von Anime-Details.
     private var detailsItem: TempEntityAnimeModel =
         TempEntityAnimeModel(0, "", "", "", "")
 
+
+    // Lädt die Daten des Animes und stellt sie dar.
     @SuppressLint("SetTextI18n")
     private fun getData() {
         viewModel.animeDetailData.observe(viewLifecycleOwner) {
@@ -128,6 +129,8 @@ class AnimeDetailFragment : Fragment() {
 
     private var addedFavorite: Boolean = false
 
+
+    // Verwaltet den Favoritenstatus und das Icon für den Favoritenbutton.
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun getFavorite() {
         viewModel.animeInsertStatus.observe(viewLifecycleOwner) {

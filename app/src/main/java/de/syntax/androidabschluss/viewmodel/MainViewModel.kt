@@ -26,6 +26,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
+// ViewModel zur Verwaltung der Geschäftslogik für die Anime-Anwendung.
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = Repository(
         AnimeApi.retrofitService,
@@ -35,6 +36,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     )
 
+    // LiveData-Objekte zur Speicherung und Beobachtung der Daten aus der Datenbank und API.
     private val _animeDetailData = MutableLiveData<AnimeDetailModel>()
     val animeDetailData : LiveData<AnimeDetailModel> get() = _animeDetailData
 
@@ -71,6 +73,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
 
 
+    // Initialisiert die Ladevorgänge für die bevorzugten Anime und Charaktere.
     init {
         getFavoriteAnime()
         getFavoriteCharacters()
@@ -79,8 +82,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
 
 
-
-
+    // Funktionen zum Laden von Daten aus der API und dem Speichern bzw. Verwalten in der lokalen Datenbank.
     fun getAnimeList(page: Int) {
         viewModelScope.launch {
             _anime.postValue(repository.getAnimeList(page))
@@ -154,6 +156,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    // Funktionen zur Verwaltung von Lieblingsanimes und -charakteren in der lokalen Datenbank.
     fun getFavoriteCharacters() {
         viewModelScope.launch(Dispatchers.Main) {
             val favoritesCharacters = repository.getFavoriteCharacters()

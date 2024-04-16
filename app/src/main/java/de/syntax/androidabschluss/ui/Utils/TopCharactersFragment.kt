@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,26 +14,30 @@ import de.syntax.androidabschluss.data.models.CharactersData
 import de.syntax.androidabschluss.databinding.FragmentTopCharactersBinding
 import de.syntax.androidabschluss.viewmodel.MainViewModel
 
+
+// Fragment zur Anzeige einer Liste der Top-Characters.
 class TopCharactersFragment : Fragment() {
-    private lateinit var b : FragmentTopCharactersBinding
+    private lateinit var binding : FragmentTopCharactersBinding
     private val viewModel: MainViewModel by lazy {
         ViewModelProvider(this)[MainViewModel::class.java]
     }
 
     private var listTCha : ArrayList<CharactersData> = ArrayList()
     private lateinit var adapterTCha : RankingTopCharactersAdapter
+
+    // Erstellt die Ansicht des Fragments und initialisiert das Binding.
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        b = FragmentTopCharactersBinding.inflate(layoutInflater,container,false)
-        // Inflate the layout for this fragment
-        return b.root
+        binding = FragmentTopCharactersBinding.inflate(layoutInflater,container,false)
+        return binding.root
     }
 
+    // Konfiguriert das Verhalten und die Inhalte der Ansicht, nachdem diese erstellt wurde.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        b.apply {
+        binding.apply {
             rvTopCharacters.setHasFixedSize(true)
             val lm = LinearLayoutManager(requireContext())
             rvTopCharacters.layoutManager = lm
@@ -43,15 +46,17 @@ class TopCharactersFragment : Fragment() {
 
         }
         getListener()
-        viewModel.getTopCharactersList(FirstPage)
-        paginationFunc()
+        viewModel.getTopCharactersList(FirstPage)// Lädt die erste Seite der Top-Characters.
+        paginationFunc()// Setzt die Paginierungsfunktion auf.
     }
 
     private var TotalPage = 1
     private var FirstPage = 1
     private var PaginationDuration = false
+
+    // Implementiert die Logik für das unendliche Scrollen/Paginieren.
     private fun paginationFunc() {
-        b.rvTopCharacters.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.rvTopCharacters.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
@@ -74,6 +79,7 @@ class TopCharactersFragment : Fragment() {
         })
     }
 
+    // Setzt den Listener, der auf Änderungen der Daten reagiert und den Adapter aktualisiert.
     @SuppressLint("NotifyDataSetChanged")
     private fun getListener() {
         viewModel.characters.observe(viewLifecycleOwner) {model->

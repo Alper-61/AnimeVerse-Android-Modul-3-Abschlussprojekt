@@ -14,6 +14,7 @@ import de.syntax.androidabschluss.data.models.AnimeData
 import de.syntax.androidabschluss.databinding.FragmentTopAnimeBinding
 import de.syntax.androidabschluss.viewmodel.MainViewModel
 
+// Fragment zur Anzeige einer Liste der Top-Animes.
 class TopAnimeFragment : Fragment() {
 
     private lateinit var binding : FragmentTopAnimeBinding
@@ -25,18 +26,18 @@ class TopAnimeFragment : Fragment() {
     private var listTAnime : ArrayList<AnimeData> = ArrayList()
     private lateinit var adapterTAnime : RankingTopAnimeAdapter
 
+
+    // Erstellt die Ansicht des Fragments und initialisiert das Binding.
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentTopAnimeBinding.inflate(layoutInflater,container,false)
-        // Inflate the layout for this fragment
-        getListener()
-        viewModel.getTopAnimeList(FirstPage)
-        paginationFunc()
 
         return binding.root
     }
+
+    // Konfiguriert das Verhalten und die Inhalte der Ansicht, nachdem diese erstellt wurde.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
@@ -50,13 +51,15 @@ class TopAnimeFragment : Fragment() {
 
         }
         getListener()
-        viewModel.getTopAnimeList(FirstPage)
-        paginationFunc()
+        viewModel.getTopAnimeList(FirstPage)// Lädt die erste Seite der Top-Animes.
+        paginationFunc()// Setzt die Paginierungsfunktion auf.
     }
 
     private var TotalPage = 1
     private var FirstPage = 1
     private var PaginationDuration = false
+
+    // Implementiert die Logik für das unendliche Scrollen/Paginieren.
     private fun paginationFunc() {
         binding.rvTAnime.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -81,6 +84,7 @@ class TopAnimeFragment : Fragment() {
         })
     }
 
+    // Setzt den Listener, der auf Änderungen der Daten reagiert und den Adapter aktualisiert.
     @SuppressLint("NotifyDataSetChanged")
     private fun getListener() {
         viewModel.anime.observe(viewLifecycleOwner) {model->
