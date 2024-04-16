@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import de.syntax.androidabschluss.Utils.glideImageSet
@@ -23,10 +22,11 @@ import kotlinx.coroutines.withContext
 
 
 class AnimeDetailFragment : Fragment() {
-    private lateinit var binding: FragmentAnimeDetailBinding
-    private lateinit var viewModel: MainViewModel
+    private var binding: FragmentAnimeDetailBinding? = null
+    private val viewModel: MainViewModel by lazy {
+        ViewModelProvider(this)[MainViewModel::class.java]
+    }
 
-    private val viewModelFavorite: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,32 +35,30 @@ class AnimeDetailFragment : Fragment() {
         binding = FragmentAnimeDetailBinding.inflate(layoutInflater, container, false)
         // Inflate the layout for this fragment
 
-        return binding.root
+
+        return binding?.root
+    }
+
+    private var malId  = 0
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val bundle: AnimeDetailFragmentArgs by navArgs()
+        malId = bundle.malId
+
+        setup()
+        getFavorite()
+        getData()
+        viewModel.getAnimeDetails(malId)
+        viewModel.searchFavoriteAnime(malId)
     }
 
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val bundle: AnimeDetailFragmentArgs by navArgs()
-        val id = bundle.malId
-
-        setup()
-
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        getData()
-        viewModel.getAnimeDetails(id)
-
-
-        getFavorite()
-        viewModelFavorite.searchFavoriteAnime(id)
-        }
-
-
     private fun setup() {
-        binding.apply {
+        binding?.apply {
             favoriteBtn.setOnClickListener {
                 if (detailsItem.image_url.isNotEmpty()) {
-                    viewModelFavorite.addFavoriteAnime(
+                    viewModel.addFavoriteAnime(
                         EntityAnime(
                             detailsItem.mal_id,
                             detailsItem.image_url,
@@ -86,65 +84,62 @@ class AnimeDetailFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun getData() {
         viewModel.animeDetailData.observe(viewLifecycleOwner) {
-            if (it.data.mal_id != null) {
-                detailsItem.mal_id = it.data.mal_id
-                detailsItem.image_url = it.data.images?.jpg?.image_url!!
-                detailsItem.title = it.data.title!!
-                detailsItem.type = it.data.type!!
-                detailsItem.source = it.data.source!!
+            if (it != null) {
+                if (it.data.mal_id != null) {
+                    detailsItem.mal_id = it.data.mal_id
+                    detailsItem.image_url = it.data.images?.jpg?.image_url!!
+                    detailsItem.title = it.data.title!!
+                    detailsItem.type = it.data.type!!
+                    detailsItem.source = it.data.source!!
 
-            }
-
-            binding.apply {
-                CoroutineScope(Dispatchers.Main).launch {
-                    var image = it.data.images?.jpg?.large_image_url
-                    if (image != null) {
-                        animImage.glideImageSet(image)
-                    } else {
-                        image = it.data.images?.jpg?.image_url
-                        if (image != null) {
-                            animImage.glideImageSet(image)
-                        } else {
-                            image = it.data.images?.jpg?.small_image_url
+                    binding?.apply {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            var image = it.data.images.jpg.large_image_url
                             if (image != null) {
                                 animImage.glideImageSet(image)
-                            }
-                        }
+                            } else {
+                                image = it.data.images.jpg.image_url
+                                animImage.glideImageSet(image)
 
+                            }
+                            titleTv.text = it.data.title
+                            ratingTv.text = getString(R.string.rating) + it.data.rating
+                            typeTv.text = getString(R.string.type) + it.data.type
+                            sourceTv.text = getString(R.string.source) + it.data.source
+                            epidoseTv.text = getString(R.string.epidose) + it.data.episodes
+                            durationTv.text = getString(R.string.duration) + it.data.duration
+                            scoreTv.text =
+                                getString(R.string.score) + it.data.score + getString(R.string.ten)
+                            historyTv.text = it.data.history
+                            descriptionTv.text = it.data.description
+
+                        }
                     }
-                    titleTv.text = it.data.title
-                    ratingTv.text = getString(R.string.rating) + it.data.rating
-                    typeTv.text = getString(R.string.type) + it.data.type
-                    sourceTv.text = getString(R.string.source) + it.data.source
-                    epidoseTv.text = getString(R.string.epidose) + it.data.episodes
-                    durationTv.text = getString(R.string.duration) + it.data.duration
-                    scoreTv.text =
-                        getString(R.string.score) + it.data.score + getString(R.string.ten)
-                    historyTv.text = it.data.history
-                    descriptionTv.text = it.data.description
 
                 }
+            } else {
+                viewModel.getAnimeDetails(malId)
             }
+
 
         }
     }
-
 
 
     private var addedFavorite: Boolean = false
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun getFavorite() {
-        viewModelFavorite.insertStatus.observe(viewLifecycleOwner) {
+        viewModel.insertStatus.observe(viewLifecycleOwner) {
             if (it != null) {
-                binding.favoriteBtn.setImageDrawable(
+                binding?.favoriteBtn?.setImageDrawable(
                     resources.getDrawable(
                         R.drawable.favoritefill,
                         null
                     )
                 )
             } else {
-                binding.favoriteBtn.setImageDrawable(
+                binding?.favoriteBtn?.setImageDrawable(
                     resources.getDrawable(
                         R.drawable.favoriteempty,
                         null
@@ -152,20 +147,20 @@ class AnimeDetailFragment : Fragment() {
                 )
             }
         }
-        viewModelFavorite.dbSearchStatus.observe(viewLifecycleOwner) { entityAnime ->
+        viewModel.dbSearchStatus.observe(viewLifecycleOwner) { entityAnime ->
             addedFavorite = entityAnime != null
             CoroutineScope(Dispatchers.IO).launch {
                 withContext(Dispatchers.Main) {
                     //Favorite Icon Fill || Empty transactions
                     if (addedFavorite) {
-                        binding.favoriteBtn.setImageDrawable(
+                        binding?.favoriteBtn?.setImageDrawable(
                             resources.getDrawable(
                                 R.drawable.favoritefill,
                                 null
                             )
                         )
                     } else {
-                        binding.favoriteBtn.setImageDrawable(
+                        binding?.favoriteBtn?.setImageDrawable(
                             resources.getDrawable(
                                 R.drawable.favoriteempty,
                                 null
@@ -176,9 +171,7 @@ class AnimeDetailFragment : Fragment() {
             }
         }
     }
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null!! // Verhindern von Memory Leaks
-    }
+
+
 
 }

@@ -50,7 +50,7 @@ class HomeFragment : Fragment() {
             binding.rvAnime.setHasFixedSize(true)
             val lmAnime = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL)
             binding.rvAnime.layoutManager = lmAnime
-            adapterAnime = HomeAnimeAdapter(listAnime, viewModel)
+            adapterAnime = HomeAnimeAdapter(listAnime)
             binding.rvAnime.adapter = adapterAnime
 
 
@@ -138,22 +138,44 @@ class HomeFragment : Fragment() {
         listCharacters.clear()
         listTopReviews.clear()
         viewModel.anime.observe(viewLifecycleOwner) {model->
-            animeTotalPage = model.pagination?.totalPage ?: 1
-            model.data?.let { it1 -> listAnime.addAll(it1) }
-            adapterAnime.notifyDataSetChanged()
-            animePaginationDuration = false
+            try {
+                animeTotalPage = model.pagination?.totalPage ?: 1
+                model.data?.let { it1 ->
+                    listAnime.clear()
+                    listAnime.addAll(it1) }
+                adapterAnime.notifyDataSetChanged()
+                animePaginationDuration = false
+            }catch (e:Exception) {
+
+            }
+
+
         }
 
         viewModel.characters.observe(viewLifecycleOwner) {model->
-            chaTotalPage = model.pagination?.totalPage ?: 1
-            model.data?.let { it1 -> listCharacters.addAll(it1) }
-            adapterCharacters.notifyDataSetChanged()
-            chaPaginationDuration = false
+            try {
+                chaTotalPage = model.pagination?.totalPage ?: 1
+                model.data?.let { it1 ->
+                    listCharacters.clear()
+                    listCharacters.addAll(it1) }
+                adapterCharacters.notifyDataSetChanged()
+                chaPaginationDuration = false
+            }catch (e:Exception) {
+
+            }
+
         }
 
         viewModel.topreviews.observe(viewLifecycleOwner) {model->
-            model.data?.let { it1 -> listTopReviews.addAll(it1) }
-            adapterTopReviews.notifyDataSetChanged()
+            try {
+                model.data?.let { it1 ->
+                    listTopReviews.clear()
+                    listTopReviews.addAll(it1) }
+                adapterTopReviews.notifyDataSetChanged()
+            }catch (e:Exception) {
+
+            }
+
         }
     }
 }

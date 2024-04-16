@@ -17,8 +17,7 @@ import de.syntax.androidabschluss.ui.AnimeDetailFragment
 import de.syntax.androidabschluss.ui.HomeFragmentDirections
 import de.syntax.androidabschluss.viewmodel.MainViewModel
 
-class HomeAnimeAdapter(private val dataset: List<AnimeData>,
-    private val viewModel : MainViewModel) :
+class HomeAnimeAdapter(private val dataset: List<AnimeData>) :
     RecyclerView.Adapter<HomeAnimeAdapter.HomeAnimeViewHolder>() {
     inner class HomeAnimeViewHolder(val binding: DesignHomeAnimeCharactersBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -39,6 +38,7 @@ class HomeAnimeAdapter(private val dataset: List<AnimeData>,
 
     override fun onBindViewHolder(holder: HomeAnimeViewHolder, position: Int) {
         val item = dataset[position]
+
         item.images?.jpg?.image_url?.let { holder.binding.imageView.glideImageSet(it) }
             holder.binding.textView.text = item.title
 

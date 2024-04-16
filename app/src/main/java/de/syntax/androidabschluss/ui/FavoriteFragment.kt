@@ -36,13 +36,6 @@ class FavoriteFragment : Fragment() {
     ): View? {
         binding = FragmentFavoriteBinding.inflate(layoutInflater,container,false)
 
-        // Inflate the layout for this fragment
-        return binding.root
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
 
@@ -64,8 +57,11 @@ class FavoriteFragment : Fragment() {
         getData()
         viewModel.getFavoriteAnime()
         viewModel.getFavoriteCharacters()
-    }
 
+
+        // Inflate the layout for this fragment
+        return binding.root
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun getData() {
@@ -116,7 +112,10 @@ class FavoriteFragment : Fragment() {
                 }
             }
 
+
+
         }
+
 
     }
 

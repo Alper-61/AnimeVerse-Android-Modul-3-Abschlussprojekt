@@ -9,20 +9,17 @@ import androidx.recyclerview.widget.RecyclerView
 import de.syntax.androidabschluss.Utils.glideImageSet
 import de.syntax.androidabschluss.R
 import de.syntax.androidabschluss.data.local.EntityCharacters
+import de.syntax.androidabschluss.databinding.DesignHomeAnimeCharactersBinding
 import de.syntax.androidabschluss.databinding.FragmentFavoriteBinding
 import de.syntax.androidabschluss.ui.FavoriteFragmentDirections
 import de.syntax.androidabschluss.viewmodel.MainViewModel
 
 class FavoriteCharactersAdapter(private val dataset: List<EntityCharacters>):
     RecyclerView.Adapter<FavoriteCharactersAdapter.FavoriteCharactersViewHolder>() {
-    inner class FavoriteCharactersViewHolder(binding: FragmentFavoriteBinding): RecyclerView.ViewHolder(binding.root) {
-        val image : ImageView = binding.rvCharacters.findViewById(R.id.imageView)
-        val text : TextView = binding.chaTv.findViewById(R.id.textView)
-
-    }
+    inner class FavoriteCharactersViewHolder(val binding: DesignHomeAnimeCharactersBinding): RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteCharactersViewHolder {
-        val binding = FragmentFavoriteBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val binding = DesignHomeAnimeCharactersBinding.inflate(LayoutInflater.from(parent.context),parent,false)
         return FavoriteCharactersViewHolder(binding)
     }
 
@@ -33,8 +30,8 @@ class FavoriteCharactersAdapter(private val dataset: List<EntityCharacters>):
     override fun onBindViewHolder(holder: FavoriteCharactersViewHolder, position: Int) {
         val item = dataset[position]
         holder.apply {
-            image.glideImageSet(item.image_url)
-            text.text = item.name
+            binding.imageView.glideImageSet(item.image_url)
+            binding.textView.text = item.name
             itemView.setOnClickListener { view ->
                 val action =
                     FavoriteFragmentDirections.actionFavoriteFragmentToCharacterDetailFragment(

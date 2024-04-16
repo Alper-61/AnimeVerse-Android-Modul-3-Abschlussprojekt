@@ -18,6 +18,7 @@ import de.syntax.androidabschluss.data.local.EntityAnime
 import de.syntax.androidabschluss.data.local.EntityCharacters
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import okhttp3.internal.toImmutableList
 import retrofit2.Call
@@ -33,7 +34,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
 
     )
-
 
 
 
@@ -179,11 +179,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             _dbSearch.postValue(character)
         }
     }
-
-
-
-    private val _data = MutableLiveData<AnimeDetailModel>()
-    val data : LiveData<AnimeDetailModel> get() = _data
 
 
 

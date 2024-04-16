@@ -23,8 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 
 class CharacterDetailFragment : Fragment() {
-
-    private lateinit var b : FragmentCharacterDetailBinding
+    private var b: FragmentCharacterDetailBinding? = null
     private lateinit var viewModel : MainViewModel
 
     private val viewModelFavorite: MainViewModel by activityViewModels()
@@ -35,24 +34,24 @@ class CharacterDetailFragment : Fragment() {
         b = FragmentCharacterDetailBinding.inflate(layoutInflater,container,false)
         // Inflate the layout for this fragment
 
-        return b.root
+        return b?.root
     }
-
+    private var malId = 0
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val bundle:CharacterDetailFragmentArgs by navArgs()
-        val id = bundle.malId
+        malId = bundle.malId
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         setup()
         getData()
-        viewModel.getCharacterDetails(id)
         getFavorite()
-        viewModelFavorite.searchFavoriteCharacter(id)
+        viewModel.getCharacterDetails(malId)
+        viewModelFavorite.searchFavoriteCharacter(malId)
 
     }
 
     private fun setup() {
-        b.apply {
+        b?.apply {
             favoriteBtn.setOnClickListener {
                 if (detailsItem.image_url.isNotEmpty()) {
                     viewModelFavorite.addFavoriteCharacter(
@@ -70,25 +69,31 @@ class CharacterDetailFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun getData() {
         viewModel.characterDetailData.observe(viewLifecycleOwner) {
-            if (it.data.mal_id != null) {
-                detailsItem.mal_id = it.data.mal_id
-                detailsItem.image_url = it.data.images?.jpg?.image_url!!
-                detailsItem.name = it.data.name!!
-                detailsItem.about = it.data.about!!
-
-            }
-
-            b.apply {
-                CoroutineScope(Dispatchers.Main).launch {
-                    var image = it.data.images?.jpg?.image_url
-                    if (image != null) {
-                        animImage.glideImageSet(image)
-                    }
-                    titleTv.text = it.data.name
-                    descriptionTv.text = it.data.about
+            if (it != null) {
+                if (it.data.mal_id != null) {
+                    detailsItem.mal_id = it.data.mal_id
+                    detailsItem.image_url = it.data.images?.jpg?.image_url!!
+                    detailsItem.name = it.data.name!!
+                    detailsItem.about = it.data.about!!
 
                 }
+                b?.apply {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        var image = it.data.images?.jpg?.image_url
+                        if (image != null) {
+                            animImage.glideImageSet(image)
+                        }
+                        titleTv.text = it.data.name
+                        descriptionTv.text = it.data.about
+
+                    }
+                }
+            }else {
+                viewModel.getCharacterDetails(malId)
             }
+
+
+
 
         }
     }
@@ -97,14 +102,14 @@ class CharacterDetailFragment : Fragment() {
     private fun getFavorite() {
         viewModelFavorite.insertStatus.observe(viewLifecycleOwner) {
             if (it != null) {
-                b.favoriteBtn.setImageDrawable(
+                b?.favoriteBtn?.setImageDrawable(
                     resources.getDrawable(
                         R.drawable.favoritefill,
                         null
                     )
                 )
             }else {
-                b.favoriteBtn.setImageDrawable(
+                b?.favoriteBtn?.setImageDrawable(
                     resources.getDrawable(
                         R.drawable.favoriteempty,
                         null
@@ -118,14 +123,14 @@ class CharacterDetailFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     //Favorite Icon Fill || Empty transactions
                     if (addedFavorite) {
-                        b.favoriteBtn.setImageDrawable(
+                        b?.favoriteBtn?.setImageDrawable(
                             resources.getDrawable(
                                 R.drawable.favoritefill,
                                 null
                             )
                         )
                     } else {
-                        b.favoriteBtn.setImageDrawable(
+                        b?.favoriteBtn?.setImageDrawable(
                             resources.getDrawable(
                                 R.drawable.favoriteempty,
                                 null
@@ -135,6 +140,11 @@ class CharacterDetailFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        b = null // Verhindern von Memory Leaks
     }
 
 

@@ -19,17 +19,13 @@ import de.syntax.androidabschluss.ui.Utils.RankingFragmentDirections
 import de.syntax.androidabschluss.viewmodel.MainViewModel
 
 class RankingTopCharactersAdapter(private val list: List<CharactersData>) :
-    RecyclerView.Adapter<RankingTopCharactersAdapter.d>() {
-    inner class d(v: View) : RecyclerView.ViewHolder(v) {
-        val image: ImageView = v.findViewById(R.id.imageView2)
-        val textTypeTitle: TextView = v.findViewById(R.id.textView2)
-        val textReview: TextView = v.findViewById(R.id.textView3)
-    }
+    RecyclerView.Adapter<RankingTopCharactersAdapter.RankingTopViewHolder>() {
+    inner class RankingTopViewHolder(val binding: DesignHomeTopAnimeCharactersBinding) : RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): d {
-        val l = LayoutInflater.from(parent.context)
-            .inflate(R.layout.design_home_top_anime_characters, parent, false)
-        return d(l)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RankingTopViewHolder {
+        val binding = DesignHomeTopAnimeCharactersBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+
+        return RankingTopViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -37,13 +33,13 @@ class RankingTopCharactersAdapter(private val list: List<CharactersData>) :
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: d, position: Int) {
+    override fun onBindViewHolder(holder: RankingTopViewHolder, position: Int) {
         val item = list[position]
         holder.apply {
-            item.images?.jpg?.let { it.image_url.let { it1 -> image.glideImageSet(it1) } }
-            textTypeTitle.text =
+            item.images?.jpg?.let { it.image_url.let { it1 -> binding.imageView2.glideImageSet(it1) } }
+            binding.textView2.text =
                 itemView.context.getString(R.string.name) + item.name
-            textReview.text = item.about
+            binding.textView3.text = item.about
 
             itemView.setOnClickListener {view->
                 val action = item.mal_id?.let {

@@ -13,7 +13,7 @@ import de.syntax.androidabschluss.databinding.FragmentTopReviewsDetailBinding
 
 class TopReviewsDetailFragment : Fragment() {
 
-    private lateinit var binding: FragmentTopReviewsDetailBinding
+    private var binding: FragmentTopReviewsDetailBinding? = null
     private val args: TopReviewsDetailFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -21,26 +21,29 @@ class TopReviewsDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentTopReviewsDetailBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding!!.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView(args.list)
-        binding.backBtn.setOnClickListener {
+        binding?.backBtn?.setOnClickListener {
             activity?.onBackPressedDispatcher?.onBackPressed()
         }
 
 
         }
     private fun setupView(reviewData: TopReviewsData) {
-        binding.titleTv.text = reviewData.entry?.title
-        binding.ratingTv.text = "${getString(R.string.score)} ${reviewData.score}${getString(R.string.ten)}"
+        binding?.titleTv?.text = reviewData.entry?.title
+        binding?.ratingTv?.text = "${getString(R.string.score)} ${reviewData.score}${getString(R.string.ten)}"
         reviewData.entry?.images?.jpg?.image_url?.let { imageUrl ->
-            binding.animImage.glideImageSet(imageUrl)
+            binding?.animImage?.glideImageSet(imageUrl)
         }
-        binding.typeTv.text = "${getString(R.string.type)} ${reviewData.type}"
-        binding.descriptionTv.text = reviewData.review
+        binding?.typeTv?.text = "${getString(R.string.type)} ${reviewData.type}"
+        binding?.descriptionTv?.text = reviewData.review
     }
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null // Verhindern von Memory Leaks
+    }
 
 }

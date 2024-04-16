@@ -10,28 +10,32 @@ import androidx.recyclerview.widget.RecyclerView
 import de.syntax.androidabschluss.Utils.glideImageSet
 import de.syntax.androidabschluss.data.models.CharactersData
 import de.syntax.androidabschluss.R
+import de.syntax.androidabschluss.databinding.DesignHomeAnimeCharactersBinding
 import de.syntax.androidabschluss.ui.HomeFragmentDirections
 
-class HomeCharactersAdapter(private val dataset: List<CharactersData>):RecyclerView.Adapter<HomeCharactersAdapter.d>() {
-    inner class d(v:View):RecyclerView.ViewHolder(v) {
-        val image : ImageView = v.findViewById(R.id.imageView)
-        val text : TextView = v.findViewById(R.id.textView)
-    }
+class HomeCharactersAdapter(private val dataset: List<CharactersData>):RecyclerView.Adapter<HomeCharactersAdapter.HomeCharacterViewHolder>() {
+    inner class HomeCharacterViewHolder(val binding: DesignHomeAnimeCharactersBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): d {
-        val l = LayoutInflater.from(parent.context).inflate(R.layout.design_home_anime_characters,parent,false)
-        return d(l)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeCharacterViewHolder {
+        val binding = DesignHomeAnimeCharactersBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return HomeCharacterViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
         return dataset.size
     }
 
-    override fun onBindViewHolder(holder: d, position: Int) {
+    override fun onBindViewHolder(holder: HomeCharacterViewHolder, position: Int) {
         val item = dataset[position]
         holder.apply {
-            item.images?.jpg?.let { image.glideImageSet(it.image_url) }
-            text.text = item.name
+            item.images?.jpg?.let { binding.imageView.glideImageSet(it.image_url) }
+            binding.textView.text = item.name
 
             itemView.setOnClickListener {view->
                 val action = item.mal_id?.let {

@@ -12,22 +12,23 @@ import de.syntax.androidabschluss.Utils.glideImageSet
 import de.syntax.androidabschluss.data.models.AnimeData
 import de.syntax.androidabschluss.R
 import de.syntax.androidabschluss.databinding.DesignHomeTopAnimeCharactersBinding
+import de.syntax.androidabschluss.databinding.DesignHomeTopreviewsBinding
 import de.syntax.androidabschluss.databinding.FragmentTopAnimeBinding
 import de.syntax.androidabschluss.ui.Utils.RankingFragmentDirections
 import de.syntax.androidabschluss.viewmodel.MainViewModel
 
 class RankingTopAnimeAdapter(private val list: List<AnimeData>) :
-    RecyclerView.Adapter<RankingTopAnimeAdapter.d>() {
-    inner class d(v: View) : RecyclerView.ViewHolder(v) {
-        val image: ImageView = v.findViewById(R.id.imageView2)
-        val textTypeTitle: TextView = v.findViewById(R.id.textView2)
-        val textReview: TextView = v.findViewById(R.id.textView3)
-    }
+    RecyclerView.Adapter<RankingTopAnimeAdapter.RankingViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): d {
-        val l = LayoutInflater.from(parent.context)
-            .inflate(R.layout.design_home_top_anime_characters, parent, false)
-        return d(l)
+    inner class RankingViewHolder(val binding: DesignHomeTopAnimeCharactersBinding) : RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RankingViewHolder {
+        val binding = DesignHomeTopAnimeCharactersBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return RankingViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -35,13 +36,13 @@ class RankingTopAnimeAdapter(private val list: List<AnimeData>) :
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: d, position: Int) {
+    override fun onBindViewHolder(holder: RankingViewHolder, position: Int) {
         val item = list[position]
         holder.apply {
-            item.images?.jpg?.let { it.image_url?.let { it1 -> image.glideImageSet(it1) } }
-            textTypeTitle.text =
+            item.images?.jpg?.let { it.image_url?.let { it1 -> binding.imageView2.glideImageSet(it1) } }
+            binding.textView2.text =
                 itemView.context.getString(R.string.type) + item.type + "\n" + itemView.context.getString(R.string.source) + (item.source)
-            textReview.text = item.title
+            binding.textView3.text = item.title
 
             itemView.setOnClickListener {view->
                 val action = item.mal_id?.let {
