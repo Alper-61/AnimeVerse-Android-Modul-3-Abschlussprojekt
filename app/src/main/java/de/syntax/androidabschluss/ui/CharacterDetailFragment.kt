@@ -1,14 +1,12 @@
 package de.syntax.androidabschluss.ui
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import de.syntax.androidabschluss.R
@@ -25,7 +23,7 @@ import kotlinx.coroutines.withContext
 
 // Fragment zur Detailansicht eines Charakters.
 class CharacterDetailFragment : Fragment() {
-    private var b: FragmentCharacterDetailBinding? = null
+    private var binding: FragmentCharacterDetailBinding? = null
     private lateinit var viewModel : MainViewModel
 
     // Verwendung des ViewModel aus dem umgebenden Aktivitätskontext.
@@ -37,10 +35,10 @@ class CharacterDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        b = FragmentCharacterDetailBinding.inflate(layoutInflater,container,false)
+        binding = FragmentCharacterDetailBinding.inflate(layoutInflater,container,false)
         // Inflate the layout for this fragment
 
-        return b?.root
+        return binding?.root
     }
     private var malId = 0
 
@@ -60,7 +58,7 @@ class CharacterDetailFragment : Fragment() {
 
     // Initialisiert UI-Elemente und Interaktionen.
     private fun setup() {
-        b?.apply {
+        binding?.apply {
             favoriteBtn.setOnClickListener {
                 if (detailsItem.image_url.isNotEmpty()) {
                     viewModelFavorite.addFavoriteCharacter(
@@ -90,7 +88,7 @@ class CharacterDetailFragment : Fragment() {
                     detailsItem.about = it.data.about!!
 
                 }
-                b?.apply {
+                binding?.apply {
                     CoroutineScope(Dispatchers.Main).launch {
                         var image = it.data.images?.jpg?.image_url
                         if (image != null) {
@@ -117,14 +115,14 @@ class CharacterDetailFragment : Fragment() {
     private fun getFavorite() {
         viewModelFavorite.insertStatus.observe(viewLifecycleOwner) {
             if (it != null) {
-                b?.favoriteBtn?.setImageDrawable(
+                binding?.favoriteBtn?.setImageDrawable(
                     resources.getDrawable(
                         R.drawable.favoritefill,
                         null
                     )
                 )
             }else {
-                b?.favoriteBtn?.setImageDrawable(
+                binding?.favoriteBtn?.setImageDrawable(
                     resources.getDrawable(
                         R.drawable.favoriteempty,
                         null
@@ -138,14 +136,14 @@ class CharacterDetailFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     //Favorite Icon Fill || Empty transactions
                     if (addedFavorite) {
-                        b?.favoriteBtn?.setImageDrawable(
+                        binding?.favoriteBtn?.setImageDrawable(
                             resources.getDrawable(
                                 R.drawable.favoritefill,
                                 null
                             )
                         )
                     } else {
-                        b?.favoriteBtn?.setImageDrawable(
+                        binding?.favoriteBtn?.setImageDrawable(
                             resources.getDrawable(
                                 R.drawable.favoriteempty,
                                 null
@@ -160,7 +158,7 @@ class CharacterDetailFragment : Fragment() {
     // Bereinigt die Bindungen, wenn das Fragment zerstört wird, um Speicherlecks zu verhindern.
     override fun onDestroyView() {
         super.onDestroyView()
-        b = null // Verhindern von Memory Leaks
+        binding = null // Verhindern von Memory Leaks
     }
 
 
